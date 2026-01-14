@@ -4,7 +4,7 @@ A Kubernetes application deployment toolkit that lets anyone deploy containerise
 
 ## Overview
 
-This project provides a reusable, extensible Helm chart that allows you to deploy any containerized application to Kubernetes with minimal configuration. Built with production best practices in mind, it's perfect for developers, small teams, and platform engineers who want a solid foundation for application deployment.
+This project provides a reusable, extensible Helm chart that allows user to deploy any containerized application to Kubernetes with minimal configuration. Built with production best practices in mind, it removes the complexity of Kubernetes YAML and infrastructure setup so developers can get workloads running quickly and consistently.
 
 ### Key Features
 
