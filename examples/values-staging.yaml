@@ -1,0 +1,98 @@
+# Staging Environment Values
+# Production-like configuration with reduced scale
+
+replicaCount: 2
+
+image:
+  repository: myregistry/myapp
+  tag: "staging-latest"
+  pullPolicy: Always
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+env:
+  - name: APP_ENV
+    value: "staging"
+  - name: LOG_LEVEL
+    value: "info"
+
+configMap:
+  enabled: true
+  data:
+    app.config: |
+      environment: staging
+      debug: false
+      log_level: info
+      features:
+        experimental: true
+
+secret:
+  enabled: true
+  data:
+    DATABASE_PASSWORD: staging-db-password
+    API_KEY: staging-api-key
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+  hosts:
+    - host: staging.myapp.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: myapp-staging-tls
+      hosts:
+        - staging.myapp.example.com
+
+# Enable health checks
+livenessProbe:
+  enabled: true
+  httpGet:
+    path: /healthz
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  enabled: true
+  httpGet:
+    path: /ready
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+# Basic autoscaling
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+
+# PDB for availability
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+# Rolling update strategy
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0

@@ -1,0 +1,111 @@
+# Example: Deploying a Custom Application
+# This file demonstrates deploying a sample Node.js application
+
+replicaCount: 2
+
+image:
+  repository: my-nodejs-app
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+env:
+  - name: NODE_ENV
+    value: "production"
+  - name: PORT
+    value: "3000"
+  - name: LOG_LEVEL
+    value: "info"
+
+configMap:
+  enabled: true
+  data:
+    app-config.json: |
+      {
+        "server": {
+          "port": 3000,
+          "host": "0.0.0.0"
+        },
+        "database": {
+          "pool": {
+            "min": 2,
+            "max": 10
+          }
+        }
+      }
+
+secret:
+  enabled: true
+  data:
+    DATABASE_URL: "postgresql://user:password@postgres:5432/myapp"
+    SESSION_SECRET: "change-me-in-production"
+    API_SECRET_KEY: "another-secret-key"
+
+volumeMounts:
+  - name: config
+    mountPath: /app/config
+    readOnly: true
+
+volumes:
+  - name: config
+    configMap:
+      name: app-starter-config
+
+livenessProbe:
+  enabled: true
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+readinessProbe:
+  enabled: true
+  httpGet:
+    path: /ready
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 5
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: myapp.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: myapp-tls
+      hosts:
+        - myapp.example.com
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 75
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0

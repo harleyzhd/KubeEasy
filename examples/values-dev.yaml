@@ -1,0 +1,55 @@
+# Development Environment Values
+# Optimized for local development and testing
+
+replicaCount: 1
+
+image:
+  repository: nginx
+  tag: "1.25"
+  pullPolicy: IfNotPresent
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
+
+env:
+  - name: APP_ENV
+    value: "development"
+  - name: LOG_LEVEL
+    value: "debug"
+  - name: DEBUG
+    value: "true"
+
+configMap:
+  enabled: true
+  data:
+    app.config: |
+      environment: development
+      debug: true
+      log_level: debug
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+
+# No autoscaling in development
+autoscaling:
+  enabled: false
+
+# No PDB needed in dev
+podDisruptionBudget:
+  enabled: false
+
+# Relaxed probes for faster development cycles
+livenessProbe:
+  enabled: false
+
+readinessProbe:
+  enabled: false

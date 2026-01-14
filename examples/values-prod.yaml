@@ -1,0 +1,164 @@
+# Production Environment Values
+# Full production configuration with high availability
+
+replicaCount: 3
+
+image:
+  repository: myregistry/myapp
+  tag: "v1.0.0"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets:
+  - name: registry-credentials
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+env:
+  - name: APP_ENV
+    value: "production"
+  - name: LOG_LEVEL
+    value: "info"
+  - name: ENABLE_METRICS
+    value: "true"
+
+configMap:
+  enabled: true
+  data:
+    app.config: |
+      environment: production
+      debug: false
+      log_level: info
+      server:
+        port: 8080
+        timeout: 30s
+        max_connections: 1000
+      features:
+        experimental: false
+        rate_limiting: true
+
+secret:
+  enabled: true
+  data:
+    DATABASE_PASSWORD: REPLACE_WITH_SECURE_PASSWORD
+    API_KEY: REPLACE_WITH_SECURE_API_KEY
+    JWT_SECRET: REPLACE_WITH_SECURE_JWT_SECRET
+
+service:
+  type: ClusterIP
+  port: 80
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - host: myapp.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: myapp-prod-tls
+      hosts:
+        - myapp.example.com
+
+# Comprehensive health checks
+livenessProbe:
+  enabled: true
+  httpGet:
+    path: /healthz
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  enabled: true
+  httpGet:
+    path: /ready
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+startupProbe:
+  enabled: true
+  httpGet:
+    path: /healthz
+    port: http
+  initialDelaySeconds: 0
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 30
+
+# Aggressive autoscaling for production traffic
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 20
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+# PDB to ensure availability during updates
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 2
+
+# Security context
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+
+podSecurityContext:
+  fsGroup: 1000
+  runAsNonRoot: true
+  runAsUser: 1000
+
+# Anti-affinity for HA
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - app-starter
+          topologyKey: kubernetes.io/hostname
+
+# Rolling update strategy
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+
+# Production labels for monitoring
+commonLabels:
+  environment: production
+  tier: application
+  monitoring: enabled
+
+# Annotations for tooling integration
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8080"
+  prometheus.io/path: "/metrics"

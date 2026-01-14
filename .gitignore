@@ -1,0 +1,44 @@
+# Helm
+*.tgz
+charts/*/charts/
+charts/*/requirements.lock
+
+# Kubernetes
+*.kubeconfig
+kubeconfig
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+*.log
+
+# Secrets (never commit these!)
+secrets/
+*.secret
+*.key
+*.pem
+
+# Environment specific
+.env
+.env.local
+.env.*.local
+
+# Build artifacts
+dist/
+build/
+target/
+
+# Dependencies
+node_modules/
+vendor/
