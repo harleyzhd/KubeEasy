@@ -216,7 +216,7 @@ kubectl logs -n ingress-nginx -l app.kubernetes.io/component=controller
 ## File Structure Reference
 
 ```
-k8s-app-starter/
+KubeEasy/
 ├── charts/app-starter/
 │   ├── Chart.yaml              # Chart metadata
 │   ├── values.yaml             # Default configuration

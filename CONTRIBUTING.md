@@ -107,7 +107,7 @@ Fixes #123
 ## Project Structure
 
 ```
-k8s-app-starter/
+KubeEasy/
 ├── charts/
 │   └── app-starter/          # Main Helm chart
 │       ├── Chart.yaml        # Chart metadata

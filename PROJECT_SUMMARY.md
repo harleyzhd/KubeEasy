@@ -1,7 +1,7 @@
 # Project Summary
 
 **Repository**: Kubernetes App Starter Platform
-**Location**: `D:/k8s-app-starter/`
+**Location**: `D:/KubeEasy/`
 **Version**: 0.1.0
 **License**: MIT
 
@@ -109,7 +109,7 @@ Three pre-configured environments:
 ## File Structure
 
 ```
-k8s-app-starter/                      [27 files total]
+KubeEasy/                      [27 files total]
 ├── .github/workflows/
 │   └── helm-lint.yaml                # CI/CD pipeline
 ├── charts/app-starter/
@@ -152,7 +152,7 @@ k8s-app-starter/                      [27 files total]
 
 1. **Initialize Git repository**:
    ```bash
-   cd D:/k8s-app-starter
+   cd D:/KubeEasy
    git init
    git add .
    git commit -m "Initial commit: Kubernetes App Starter Platform v0.1.0"
@@ -160,7 +160,7 @@ k8s-app-starter/                      [27 files total]
 
 2. **Create GitHub repository** and push:
    ```bash
-   git remote add origin https://github.com/yourusername/k8s-app-starter.git
+   git remote add origin https://github.com/harleyzhd/KubeEasy.git
    git branch -M main
    git push -u origin main
    ```

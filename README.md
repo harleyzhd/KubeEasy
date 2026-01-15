@@ -70,8 +70,8 @@ go install sigs.k8s.io/kind@latest
 
 ```bash
 # Clone this repository
-git clone https://github.com/yourusername/k8s-app-starter.git
-cd k8s-app-starter
+git clone https://github.com/harleyzhd/KubeEasy.git
+cd KubeEasy
 
 # Create a kind cluster with ingress support
 ./scripts/create-kind-cluster.sh
@@ -540,9 +540,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/k8s-app-starter/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/k8s-app-starter/discussions)
-- **Documentation**: [Wiki](https://github.com/yourusername/k8s-app-starter/wiki)
+- **Issues**: [GitHub Issues](https://github.com/harleyzhd/KubeEasy/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/harleyzhd/KubeEasy/discussions)
+- **Documentation**: [Wiki](https://github.com/harleyzhd/KubeEasy/wiki)
 
 ## Related Projects
 

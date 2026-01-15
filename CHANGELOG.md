@@ -54,5 +54,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Troubleshooting guide
 - Roadmap for future development
 
-[Unreleased]: https://github.com/yourusername/k8s-app-starter/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/yourusername/k8s-app-starter/releases/tag/v0.1.0
+[Unreleased]: https://github.com/harleyzhd/KubeEasy/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/harleyzhd/KubeEasy/releases/tag/v0.1.0
